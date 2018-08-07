@@ -1,5 +1,5 @@
 # mfour-big-data-candidate-test
-Welcome to our big data candidate test! Please complete the following exercises by forking and sending a pull request. We should be able to run your code with little setup and clearly see how you answered the questions posed in each exercise. Please try your best, answering as much as you can remembering partial code is better than no code :). If you are feeling very ambitious feel free to contribute unit tests, ideas for testing, testing strategies, other supplimental data, or even answering additional interesting bits with the data. Please enjoy and have fun with it.
+Welcome to our big data candidate test! Please complete the following exercises by forking and sending a pull request. We should be able to run your code with little setup and clearly see how you answered the questions posed in each exercise. Please try your best, answering as much as you can remembering partial code is better than no code :). If you are feeling very ambitious feel free to contribute unit tests, ideas for testing, testing strategies, other supplemental data, or even answering additional interesting bits with the data. Please enjoy and have fun with it.
 
 ## Exercise 1
 Using the data in `src/main/resources/exercise1`, compare the two files to answer:
