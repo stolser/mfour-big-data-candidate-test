@@ -1,0 +1,12 @@
+bin/
+project/
+target/
+build/
+*.class
+*.iml
+*.ipr
+*.iws
+.idea
+*.swp
+out
+.DS_Store
