@@ -1,0 +1,4 @@
+MostCrime ZipCode:[95834]
+MostCrime commit ZipCode:[95834]
+Crime happen this year:35669
+Month Of Crime:[07]
