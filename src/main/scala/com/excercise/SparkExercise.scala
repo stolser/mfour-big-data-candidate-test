@@ -2,6 +2,8 @@ package com.excercise
 
 import org.apache.log4j.Logger
 import org.apache.spark.sql._
+import org.apache.spark._
+import org.apache.spark.sql.functions.{struct, collect_list}
 import java.io._
 
 object SparkExercise extends Serializable {
@@ -10,12 +12,12 @@ object SparkExercise extends Serializable {
     val log = Logger.getLogger(getClass.getName)
 
     try {
-      val spark = SparkSession
+      val sc = SparkSession
         .builder()
         .appName("Exercise1")
         .config("spark.master", "local[*]")
         .getOrCreate()
-      val crimeDf = spark.read.format("csv").option("header", "true").load("./src/main/resources/exercise1/SacramentocrimeJanuary2006.csv")
+      val crimeDf = sc.read.format("csv").option("header", "true").load("./src/main/resources/exercise1/SacramentocrimeJanuary2006.csv")
 
       val uniqueCrime  = crimeDf.drop("district")
                       .drop("beat")
@@ -24,7 +26,7 @@ object SparkExercise extends Serializable {
                       .drop("longitude")
                       .distinct().cache()
 
-      val hourseDf = spark.read.format("csv").option("header", "true").load("./src/main/resources/exercise1/Sacramentorealestatetransactions.csv")
+      val hourseDf = sc.read.format("csv").option("header", "true").load("./src/main/resources/exercise1/Sacramentorealestatetransactions.csv")
       val uniqueHouse  = hourseDf.drop("city")
                                 .drop("zip")
                                 .drop("state")
@@ -42,21 +44,41 @@ object SparkExercise extends Serializable {
                                 .drop("price")
                                 .distinct().cache()
 
-
+      //1. How many houses were sold?
       val uniqueCrimeCollect = uniqueCrime.count()
+      //2. How many crimes occurred?
       val uniqueHouseCollect = uniqueHouse.count()
 
-      val crimeWithinHouse = uniqueCrime.join(uniqueHouse, "address").collect()
-      val file = new File("./result1.txt")
-      val bw = new BufferedWriter(new FileWriter(file))
-      bw.write("Total Crime:" + uniqueCrimeCollect.toString + "\n")
-      bw.write("Total House:" + uniqueHouseCollect.toString+ "\n")
-      crimeWithinHouse.foreach(x => {
-        bw.write("Address: " + x.getString(0) + "Date: " + x.getString(1) + "Crime: " + x.getString(2) + "Code: " + x.getString(3)+ "\n")
-      })
+      //Did any of the crimes occur at one of the houses that were sold?
+      //If so:
+      //How many?
+      //What were the crimes?
+      val crimeGroupByHouseAddress = uniqueCrime.join(uniqueHouse, "address")
+                                        .groupBy("address")
+                                        .agg(collect_list(struct("cdatetime", "crimedescr", "ucr_ncic_code").as("detail")).as("detail_list")).as("other_values").collect()
 
-      spark.close()
-      bw.close()
+      //lazy, need strong type
+      val df = sc.createDataFrame(sc.sparkContext.parallelize(Seq((uniqueCrimeCollect, uniqueHouseCollect, crimeGroupByHouseAddress))))
+              .toDF().write.mode(SaveMode.Append).parquet("Exercise1Result.parquet")
+
+//      |-- address: string (nullable = true)
+//      |-- detail_list: array (nullable = true)
+//      |    |-- element: struct (containsNull = true)
+//      |    |    |-- cdatetime: string (nullable = true)
+//      |    |    |-- crimedescr: string (nullable = true)
+//      |    |    |-- ucr_ncic_code: string (nullable = true)
+//           2561 19TH AVE   [1/6/06 22:16,12022.1 PC COMMIT FEL ON BAIL,5212]
+//                           [1/6/06 22:16,245(A)(1)AWDW/NO FIREARM/CIVIL,1315]
+//
+//          1900 DANBROOK DR  [1/3/06 15:00,BURGLARY - I RPT,7000]
+//                            [1/21/06 20:00,10851(A)VC TAKE VEH W/O OWNER,2404]
+//
+//         12 COSTA BRASE CT  [1/20/06 0:01,484 PC   PETTY THEFT/INSIDE,2308]
+      val crimeGroupByHouseAddress_parquet = sc.read.parquet("Exercise1Result.parquet")
+      crimeGroupByHouseAddress_parquet.toDF().printSchema()
+
+      sc.close()
+
     }
     catch {
       case ex: Exception =>

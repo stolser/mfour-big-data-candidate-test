@@ -1,0 +1,24 @@
+cdatetime,
+address,
+district,
+beat,
+grid,
+crimedescr,
+ucr_ncic_code,
+latitude,
+longitude
+1/1/06 0:00,3108 OCCIDENTAL DR,3,3C        ,1115,10851(A)VC TAKE VEH W/O OWNER,2404,38.55042047,-121.3914158
+
+street, 3526 HIGH ST
+city,
+zip,
+state,
+beds,
+baths,
+sq__ft,
+type,
+sale_date,
+price,
+latitude,
+longitude
+,SACRAMENTO,95838,CA,2,1,836,Residential,Wed May 21 00:00:00 EDT 2008,59222,38.631913,-121.434879
