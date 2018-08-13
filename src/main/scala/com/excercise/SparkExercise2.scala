@@ -85,7 +85,7 @@ object SparkExercise2 extends Serializable {
       //val currentResult = new Exercise2Result(zipCodeWithMaxCount, zipCodeWithMaxCountCommit, crimeOverTheYear, monthOfMaxCrime) strong type
 
       val df = spark.createDataFrame(spark.sparkContext.parallelize(Seq((zipCodeWithMaxCount, zipCodeWithMaxCountCommit, crimeOverTheYear, monthOfMaxCrime))))
-      df.write.mode(SaveMode.Append).parquet("Exercise2Result.parquet")
+      df.write.mode(SaveMode.Overwrite).parquet("Exercise2Result.parquet")
 
       val Exercise2Result_parquet = spark.read.parquet("Exercise2Result.parquet")
       Exercise2Result_parquet.toDF().printSchema()

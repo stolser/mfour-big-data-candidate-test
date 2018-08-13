@@ -2,8 +2,9 @@ package com.excercise
 
 import org.apache.log4j.Logger
 import org.apache.spark.sql._
+import org.apache.spark.sql.types.{StructField, _}
 import org.apache.spark._
-import org.apache.spark.sql.functions.{struct, collect_list}
+import org.apache.spark.sql.functions.{collect_list, struct}
 import java.io._
 
 object SparkExercise extends Serializable {
@@ -17,32 +18,17 @@ object SparkExercise extends Serializable {
         .appName("Exercise1")
         .config("spark.master", "local[*]")
         .getOrCreate()
+
       val crimeDf = sc.read.format("csv").option("header", "true").load("./src/main/resources/exercise1/SacramentocrimeJanuary2006.csv")
 
-      val uniqueCrime  = crimeDf.drop("district")
-                      .drop("beat")
-                      .drop("grid")
-                      .drop("latitude")
-                      .drop("longitude")
-                      .distinct().cache()
+      val uniqueCrime  = crimeDf.select("cdatetime", "address", "crimedescr", "ucr_ncic_code").cache()
 
       val hourseDf = sc.read.format("csv").option("header", "true").load("./src/main/resources/exercise1/Sacramentorealestatetransactions.csv")
-      val uniqueHouse  = hourseDf.drop("city")
-                                .drop("zip")
-                                .drop("state")
-                                .drop("beds")
-                                .drop("baths")
-                                .drop("sq__ft")
-                                .drop("type")
-                                .drop("sq__ft")
-                                .drop("latitude")
-                                .drop("longitude")
+      val uniqueHouse  = hourseDf
                                 .filter(hourseDf("sale_date").isNotNull)
                                 .filter(hourseDf("price").cast("int") > 0)
                                 .withColumnRenamed("street" ,"address")
-                                .drop("sale_date")
-                                .drop("price")
-                                .distinct().cache()
+                                .select("address").cache()
 
       //1. How many houses were sold?
       val uniqueCrimeCollect = uniqueCrime.count()
@@ -53,13 +39,32 @@ object SparkExercise extends Serializable {
       //If so:
       //How many?
       //What were the crimes?
+
+      def crimeGroupByHouseAddressDetail: ArrayType = ArrayType(StructType(
+        List(
+          StructField("cdatetime", StringType, true),
+            StructField("crimedescr", StringType, true),
+            StructField("ucr_ncic_code", StringType, true)
+        )
+      ))
+
+      def crimeGroupByHouseAddressSchema: StructType = StructType(
+        List(
+          StructField("address", StringType, true),
+          StructField("detail_list", crimeGroupByHouseAddressDetail)
+        )
+      )
+
       val crimeGroupByHouseAddress = uniqueCrime.join(uniqueHouse, "address")
                                         .groupBy("address")
-                                        .agg(collect_list(struct("cdatetime", "crimedescr", "ucr_ncic_code").as("detail")).as("detail_list")).as("other_values").collect()
+                                        .agg(collect_list(struct("cdatetime", "crimedescr", "ucr_ncic_code"))).collectAsList
+
+
+      //val crimeGroupByHouseAddressResult = sc.createDataFrame(crimeGroupByHouseAddress, crimeGroupByHouseAddressSchema)
 
       //lazy, need strong type
-      val df = sc.createDataFrame(sc.sparkContext.parallelize(Seq((uniqueCrimeCollect, uniqueHouseCollect, crimeGroupByHouseAddress))))
-              .toDF().write.mode(SaveMode.Append).parquet("Exercise1Result.parquet")
+      val df = sc.createDataFrame(sc.sparkContext.parallelize(Seq((uniqueCrimeCollect, uniqueHouseCollect,crimeGroupByHouseAddress))))
+              .write.mode(SaveMode.Overwrite).parquet("Exercise1Result.parquet")
 
 //      |-- address: string (nullable = true)
 //      |-- detail_list: array (nullable = true)
