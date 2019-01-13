@@ -1,0 +1,3 @@
+ActivityNumber,District,Neighborhood,OccurenceStartDate,OccurenceEndDate,ReportDate,OccurenceLocation,OccurenceCity,OccurenceZipCode,X_Coord,Y_Coord,PrimaryViolation,Injury
+2008-0000006,Central,Fruitridge/Pocket,1/1/2008 00:10,1/1/2008 00:10,1/1/2008 00:26,4600 Block of Parker Ave,SACRAMENTO,95820,6718354.0116,1957043.3783,PC 246 Shoot At Inhabited Dwelling/Vehicle/Etc,
+2008-0000012,Rancho Cordova,Gold River,1/1/2008 00:00,1/1/2008 00:44,1/1/2008 00:44,12200 Block of Tributary Point Dr,Sacramento,95670,6784514.46057,1993061.53351,PC 647(F) Disorderly Conduct:Public Intoxication,

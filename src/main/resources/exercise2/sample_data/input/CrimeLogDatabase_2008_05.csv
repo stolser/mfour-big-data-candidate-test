@@ -1,0 +1,3 @@
+ActivityNumber,District,Neighborhood,OccurenceStartDate,OccurenceEndDate,ReportDate,OccurenceLocation,OccurenceCity,OccurenceZipCode,X_Coord,Y_Coord,PrimaryViolation,Injury
+2008-0023877,North,Carmichael Creek,4/30/2008 22:16,4/30/2008 22:16,5/1/2008 00:01,6300 Block of Grant Ave,Carmichael,95608,6756363.5185,1991885.4439,PC 459 Burglary,
+2008-0023880,Northwest,North Highlands,4/30/2008 23:50,4/30/2008 23:58,5/1/2008 00:02,7400 Block of Larchmont Dr,North Highlands,95660,0,0,PC 273.5 Inflict Crpl Inj Sp/Cohab,

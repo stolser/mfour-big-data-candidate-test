@@ -1,0 +1,3 @@
+ActivityNumber,District,Neighborhood,OccurenceStartDate,OccurenceEndDate,ReportDate,OccurenceLocation,OccurenceCity,OccurenceZipCode,X_Coord,Y_Coord,PrimaryViolation,Injury
+2009-0008962,North Central,Arden Terrace,12/1/2008 00:01,12/1/2008 00:01,12/1/2008 00:01,1800 Block of Morse Ave,Sacramento,95825,6735336.5,1980432.75,PC 290.013 Fail to Notification of move,
+2008-0063306,Rancho Cordova,Micron Park,11/30/2008 16:00,11/30/2008 16:05,12/1/2008 00:25,9600 Block of Old Placerville Rd,Sacramento,95827,6751185.1603,1965382.5758,PC 243(D) Battery With Serious Bodily Injury (Punishment),
